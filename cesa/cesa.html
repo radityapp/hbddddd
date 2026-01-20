@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Sayanggg!!!</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            min-height: 100vh; font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, rgba(255, 77, 109, 1) 0%, rgb(239, 107, 149) 100%);
+            background-attachment: fixed;
+            color: white; display: flex; flex-direction: column; align-items: center; overflow-x: hidden;
+            padding-bottom: 50px;
+        }
+
+        /* 1. PIRINGAN MUSIK */
+        .music-container { 
+            position: fixed; bottom: 20px; right: 20px; z-index: 999; 
+            cursor: pointer; display: none; text-align: center; 
+        }
+        .vinyl-record { 
+            width: 80px; height: 80px; 
+            background: radial-gradient(circle, #333 30%, #000 31%, #333 35%, #000 40%, #000 50%); 
+            border-radius: 50%; border: 3px solid #555; position: relative; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); 
+        }
+        .vinyl-record::after { 
+            content: ""; position: absolute; top: 50%; left: 50%; 
+            transform: translate(-50%, -50%); width: 15px; height: 15px; 
+            background: white; border-radius: 50%; border: 2px solid #ff4d6d; 
+        }
+        .rotating { animation: rotateRecord 3s linear infinite; }
+        @keyframes rotateRecord { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* 2. KONTEN UTAMA & FOTO SAMPING */
+        .content-wrapper { 
+            display: flex; align-items: center; justify-content: center; 
+            gap: 30px; flex-wrap: wrap; margin-top: 80px; padding: 20px;
+        }
+        .side-img { 
+            display: none; width: 170px; height: 240px; object-fit: cover; 
+            border: 6px solid white; border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: floating 3s ease-in-out infinite;
+        }
+        @keyframes floating {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-15px) rotate(-3deg); }
+        }
+        #fotoKanan { animation: floatingRight 3s ease-in-out infinite; }
+        @keyframes floatingRight {
+            0%, 100% { transform: translateY(0) rotate(5deg); }
+            50% { transform: translateY(-15px) rotate(3deg); }
+        }
+
+        .main-card { 
+            background: rgba(255, 255, 255, 0.95); color: #333; 
+            padding: 40px; border-radius: 30px; text-align: center; 
+            max-width: 450px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); z-index: 10;
+        }
+        .btn-msg { 
+            background: #ff4d6d; color: white; border: none; 
+            padding: 15px 30px; border-radius: 50px; cursor: pointer; 
+            font-weight: bold; margin-top: 15px; font-size: 1.1rem; transition: 0.3s;
+        }
+
+        /* 3. TOP 3 SONGS SECTION */
+        .songs-section { margin-top: 80px; width: 90%; max-width: 1000px; text-align: center; }
+        .songs-grid { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
+        .song-card { 
+            background: #191414; width: 250px; padding: 20px; border-radius: 20px; 
+            text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: 0.3s;
+        }
+        .song-card:hover { transform: translateY(-10px); background: #282828; }
+        .song-img { width: 100%; aspect-ratio: 1/1; border-radius: 10px; margin-bottom: 15px; object-fit: cover; }
+        .song-info h4 { font-size: 1rem; color: #1DB954; }
+        .song-info p { font-size: 0.85rem; opacity: 0.7; }
+
+        /* 4. MAP JOURNEY */
+        .map-section { margin-top: 60px; width: 90%; max-width: 800px; display: none; flex-direction: column; align-items: center; }
+        .timeline { position: relative; width: 100%; margin-top: 30px; padding: 20px 0; }
+        .timeline::before {
+            content: ''; position: absolute; left: 50%; top: 0;
+            width: 4px; height: 100%; background: repeating-linear-gradient(to bottom, transparent, transparent 10px, white 10px, white 20px);
+            transform: translateX(-50%);
+        }
+        .timeline-item { position: relative; width: 50%; padding: 20px 40px; margin-bottom: 20px; opacity: 0; transition: 0.8s all ease; }
+        .timeline-item:nth-child(even) { left: 50%; transform: translateX(50px); }
+        .timeline-item:nth-child(odd) { left: 0; text-align: right; transform: translateX(-50px); }
+        .timeline-item.show { opacity: 1; transform: translateX(0); }
+        .dot { position: absolute; top: 25px; width: 20px; height: 20px; background: #ff4d6d; border: 4px solid white; border-radius: 50%; z-index: 5; }
+        .timeline-item:nth-child(odd) .dot { right: -10px; }
+        .timeline-item:nth-child(even) .dot { left: -10px; }
+        .timeline-content { background: rgba(255, 255, 255, 0.2); padding: 15px; border-radius: 20px; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.3); }
+        .timeline-img { width: 100%; height: 150px; object-fit: cover; border-radius: 12px; margin-bottom: 10px; border: 2px solid white; }
+        .mystery-dot { width: 100%; height: 150px; background: #ff4d6d; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: bold; border: 3px dashed white; }
+
+        /* 5. REVISI: GRID MEMORI (BENTO STYLE) */
+        #hiddenSection { display: none; width: 100%; flex-direction: column; align-items: center; }
+        
+        .memory-grid { 
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: 200px;
+            gap: 15px;
+            width: 95%;
+            max-width: 1100px;
+            margin-top: 40px;
+        }
+
+        .mem-photo { 
+            width: 100%; height: 100%; object-fit: cover; 
+            border-radius: 20px; border: 4px solid white; 
+            transition: 0.5s; cursor: pointer; opacity: 0; transform: scale(0.8);
+        }
+
+        /* Variasi ukuran agar tidak monoton */
+        .item-tall { grid-row: span 2; }
+        .item-wide { grid-column: span 2; }
+        .item-large { grid-column: span 2; grid-row: span 2; }
+
+        @media (max-width: 768px) {
+            .memory-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 150px; }
+            .item-large, .item-wide { grid-column: span 2; }
+        }
+
+        .mem-photo:hover { transform: scale(1.03) rotate(2deg); z-index: 5; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .reveal { opacity: 1 !important; transform: scale(1) !important; }
+
+        .wish-card { margin-top: 60px; background: rgba(255, 255, 255, 0.1); padding: 35px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(10px); text-align: center; width: 90%; max-width: 650px; }
+        .fade-up { animation: fadeUp 1.2s forwards; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <audio id="mySong" loop><source src="HIVI! - Satu-Satunya (Official Lyric Video).mp3" type="audio/mpeg"></audio>
+
+    <div class="music-container" id="musicContainer" onclick="toggleMusic()">
+        <div class="vinyl-record" id="vinyl"></div>
+        <div style="font-size: 10px; margin-top: 5px;" id="statusTeks">Playing... 🎵</div>
+    </div>
+
+    <div class="content-wrapper">
+        <img src="Kiri.jpeg" id="fotoKiri" class="side-img">
+        <div class="main-card">
+            <h1 style="color: #ff4d6d;">Happy Birthdayy!! 🎉</h1>
+            <p id="teksAwal" style="margin-top: 10px;">Ada pesan spesial buat kamu..</p>
+            <button class="btn-msg" id="btnUtama" onclick="bukaKejutan()">Buka Pesan</button>
+            <div id="secret-text" style="display:none; margin-top: 20px; font-style: italic; line-height: 1.6;">
+                "Selamat ulang tahun! Terima kasih suda menjadi alasan aku tersenyum dan menjalani kehidupan setiap hari. ❤️"
+            </div>
+        </div>
+        <img src="Kanan.jpeg" id="fotoKanan" class="side-img">
+    </div>
+
+    <div id="hiddenSection">
+        
+        <div class="songs-section fade-up">
+            <h2 style="letter-spacing: 2px; text-shadow: 2px 2px 10px rgba(0,0,0,0.3);">TOP 3 SONGS FOR YOU</h2>
+            <div class="songs-grid">
+                <div class="song-card">
+                    <img src="hivi1.jpg" class="song-img">
+                    <div class="song-info"><h4>Indahnya Dirimu</h4><p>Hivi</p></div>
+                </div>
+                <div class="song-card">
+                    <img src="rc.jph.jpg" class="song-img">
+                    <div class="song-info"><h4>Oh, Bella</h4><p>Reality Club</p></div>
+                </div>
+                <div class="song-card">
+                    <img src="perunggu.jpg" class="song-img">
+                    <div class="song-info"><h4>Berhasil</h4><p>Perunggu</p></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="map-section fade-up" id="journeySec" style="display: flex;">
+            <h2 style="letter-spacing: 2px; text-shadow: 2px 2px 10px rgba(0,0,0,0.3);">PORTOFOLIO CONCERT</h2>
+            <div class="timeline">
+                <div class="timeline-item"><div class="dot"></div><div class="timeline-content"><img src="konser1.jpg" class="timeline-img"><h4>Libels2025</h4></div></div>
+                <div class="timeline-item"><div class="dot"></div><div class="timeline-content"><img src="konser2.jpg" class="timeline-img"><h4>De Pop Rhythm</h4></div></div>
+                <div class="timeline-item"><div class="dot"></div><div class="timeline-content"><img src="konser3.jpg" class="timeline-img"><h4>Ekspetanica</h4></div></div>
+                <div class="timeline-item"><div class="dot"></div><div class="timeline-content"><img src="konser4.jpg" class="timeline-img"><h4>Sound Of Downtown</h4></div></div>
+                <div class="timeline-item"><div class="dot"></div><div class="timeline-content"><img src="konser6.jpg" class="timeline-img"><h4>SingAlongFest</h4></div></div>
+                <div class="timeline-item"><div class="dot"></div><div class="timeline-content"><div class="mystery-dot">?</div><h4>Coming Soon</h4><p>Next Concert? 😉</p></div></div>
+            </div>
+        </div>
+
+        <h2 class="fade-up" style="margin-top: 80px; font-size: 1.8rem; letter-spacing: 2px;">OUR MEMORIES</h2>
+        <div class="memory-grid">
+            <img src="fotom1.jpeg" class="mem-photo item-large">
+            <img src="fotom2.jpg" class="mem-photo">
+            <img src="fotom3.jpg" class="mem-photo item-tall">
+            <img src="fotom4.jpg" class="mem-photo">
+            <img src="fotom5.jpg" class="mem-photo item-wide">
+            <img src="fotom6.jpg" class="mem-photo">
+            <img src="fotom7.jpg" class="mem-photo">
+            <img src="fotom8.jpg" class="mem-photo item-tall">
+            <img src="fotom9.jpg" class="mem-photo item-wide">
+            <img src="fotom10.jpg" class="mem-photo">
+            <img src="fotom11.jpg" class="mem-photo">
+            <img src="fotom12.jpg" class="mem-photo">
+        </div>
+
+        <div class="wish-card fade-up">
+            <h3>Harapanku Untukmu</h3>
+            <p>"Semoga selalu bahagia dan betah sama aku terus sehat selalu, dan semua impianmu tercapai tahun ini. Jadi pribadi yang lebih baik lagi banyak hal baik yang mendatangimu, aminn"</p>
+        </div>
+        <footer style="margin-top: 80px; font-size: 0.8rem; opacity: 0.5; letter-spacing: 1px;">Dibuat radit - untukmu</footer>
+    </div>
+
+    <script>
+        function bukaKejutan() {
+            var song = document.getElementById('mySong');
+            var vinyl = document.getElementById('vinyl');
+            
+            song.play().then(() => {
+                vinyl.classList.add('rotating');
+                document.getElementById('statusTeks').innerHTML = "Playing... 🎵";
+            }).catch(e => console.log("Music click needed"));
+
+            document.getElementById('hiddenSection').style.display = 'flex';
+            document.getElementById('musicContainer').style.display = 'block';
+            document.getElementById('fotoKiri').style.display = 'block';
+            document.getElementById('fotoKanan').style.display = 'block';
+            document.getElementById('secret-text').style.display = 'block';
+            document.getElementById('btnUtama').style.display = 'none';
+            document.getElementById('teksAwal').style.display = 'none';
+
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            timelineItems.forEach((item, index) => {
+                setTimeout(() => { item.classList.add('show'); }, index * 400);
+            });
+
+            const photos = document.querySelectorAll('.mem-photo');
+            photos.forEach((photo, index) => {
+                // Memberikan delay acak sedikit agar munculnya lebih organik
+                setTimeout(() => { photo.classList.add('reveal'); }, index * 150);
+            });
+        }
+
+        function toggleMusic() {
+            var song = document.getElementById('mySong');
+            var vinyl = document.getElementById('vinyl');
+            if (song.paused) {
+                song.play(); vinyl.classList.add('rotating');
+                document.getElementById('statusTeks').innerHTML = "Playing... 🎵";
+            } else {
+                song.pause(); vinyl.classList.remove('rotating');
+                document.getElementById('statusTeks').innerHTML = "Paused ⏸️";
+            }
+        }
+    </script>
+</body>
+</html>
